@@ -52,7 +52,7 @@ export default function TabNavigation() {
               tabBarLabel: 'Compass',
               tabBarIcon: ({ color }) => (
                 <Icon name="compass" color={color} size={24} />
-              ),
+              ) ,
             }} />
         </BottomTab.Navigator>
   )
