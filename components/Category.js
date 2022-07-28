@@ -1,10 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import { TouchableHighlight , Text } from 'react-native'
-import React from 'react'
+import React,{useState} from 'react'
 import Colors from '../contents/colors/Colors'
 
 const Category = ({name}) => {
+
+  const [status,SetStatus]  = useState("All")
+  
   return (
     <TouchableHighlight>
         <Text style={{

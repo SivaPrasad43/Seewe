@@ -4,11 +4,6 @@ import React from 'react'
 import Colors from '../contents/colors/Colors'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
-const colors = {
-    theme_color : '#0AC5AD',
-    theme_color_light1 : '#e6fff9',
-    theme_color_light2 : '#99ffe7'
-}
 
 export default function Register() {
   return (

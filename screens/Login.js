@@ -2,24 +2,22 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import { View, Text, StyleSheet, TextInput, TouchableHighlight, Image, ImageBackground } from 'react-native'
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import Colors from '../contents/colors/Colors'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import Home from './Home'
 
 export default function Login({navigation}) {
 
     const [username,setUsername] = useState("")
     const [password,setPassword] = useState("")
 
-    // const SendData = () => {
-    //     if(username == password){
-    //         console.log("same")
-    //     }else{
-    //         console.log("different")
-    //     }
-    // }
+    const SetData = (user,pass)=>{
+        console.log("username: ",user)
+        console.log("password ",pass)
+    }
+
+
   return (
     <View style={styles.container}>
       <ImageBackground source={require('../res/login_background.png')} resizeMode="cover" style={{flex:1,width:"100%",justifyContent:'center'}}/>
@@ -51,7 +49,7 @@ export default function Login({navigation}) {
           </View>
           <TouchableOpacity 
           style={styles.LoginBtn}
-          onPress={()=> navigation.navigate("Home")}>
+          onPress={()=>navigation.navigate('TabNavigation')}>
               <Text style={{fontWeight:'500',fontSize: 15,color:Colors.DEFAULT_BLACK}}>Login</Text>
           </TouchableOpacity>
           <View style={{flexDirection: 'row'}}>

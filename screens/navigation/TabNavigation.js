@@ -6,7 +6,11 @@ import Login from '../Login';
 import Register from '../Register';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import Colors from '../../contents/colors/Colors';
-import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon  from 'react-native-vector-icons/MaterialIcons';
+import SellItem from '../SellItem';
+import Notification from '../Notification';
+import Product from '../Product';
+import HomeNavigation from './HomeNavigation';
 
 
 const BottomTab = createMaterialBottomTabNavigator()
@@ -19,8 +23,8 @@ export default function TabNavigation() {
           inactiveColor= {Colors.DEFAULT_GRAY}
           barStyle={{ backgroundColor: 'white' }}>
           <BottomTab.Screen 
-            name="Home2" 
-            component={Home}
+            name="HomeNavigation" 
+            component={HomeNavigation}
             options={{
               tabBarLabel: 'Home',
               tabBarIcon: ({ color }) => (
@@ -31,27 +35,27 @@ export default function TabNavigation() {
             name="Test 1" 
             component={Test_1}
             options={{
-              tabBarLabel: 'Compass',
+              tabBarLabel: 'Favorites',
               tabBarIcon: ({ color }) => (
-                <Icon name="compass" color={color} size={24} />
+                <Icon name="favorite" color={color} size={24} />
               ),
             }} />
           <BottomTab.Screen 
-            name="Register" 
-            component={Register}
+            name="Notification" 
+            component={Notification}
             options={{
-              tabBarLabel: 'Compass',
+              tabBarLabel: 'Notifications',
               tabBarIcon: ({ color }) => (
-                <Icon name="compass" color={color} size={24} />
+                <Icon name="notifications" color={color} size={24} />
               ),
             }} />
           <BottomTab.Screen 
             name="Login" 
             component={Login}
             options={{
-              tabBarLabel: 'Compass',
+              tabBarLabel: 'Logout',
               tabBarIcon: ({ color }) => (
-                <Icon name="compass" color={color} size={24} />
+                <Icon name="logout" color={color} size={24} />
               ) ,
             }} />
         </BottomTab.Navigator>

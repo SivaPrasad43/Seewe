@@ -2,11 +2,9 @@
 import { View, StyleSheet, Image } from 'react-native';
 import React,{useEffect} from 'react';
 
-
-
 export default function Intro({navigation}) {
   useEffect(()=>{
-    setTimeout(()=> {navigation.navigate("Login")},2000)
+    setTimeout(()=> {navigation.navigate("LoginNavigation")},2000)
   })
   return (
     <View style={styles.container}>
