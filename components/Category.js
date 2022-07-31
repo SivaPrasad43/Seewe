@@ -1,26 +1,29 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import { TouchableHighlight , Text } from 'react-native'
+import { TouchableOpacity , Text } from 'react-native'
 import React,{useState} from 'react'
 import Colors from '../contents/colors/Colors'
 
-const Category = ({name}) => {
+const Category = ({name,textColor,btnColor}) => {
 
   const [status,SetStatus]  = useState("All")
+  const hello = "hello"
   
   return (
-    <TouchableHighlight>
+    <TouchableOpacity
+      onPress={()=>console.log('hello ${hello}')}>
         <Text style={{
-            backgroundColor: Colors.THEME_COLOR_LIGHT_1,
-            paddingHorizontal: 20,
-            paddingVertical: 8,
+            backgroundColor: btnColor,
+            paddingHorizontal: 15,
+            paddingVertical: 4,
             fontSize: 14,
             marginHorizontal: 3,
             borderWidth:1,
             borderRadius: 50,
-            borderColor:Colors.THEME_COLOR
+            color: textColor,
+            borderColor:btnColor
         }}>{name}</Text>
-  </TouchableHighlight>
+  </TouchableOpacity>
   )
 }
 

@@ -12,6 +12,7 @@ import Home from './screens/Home';
 import SellItem from './screens/SellItem';
 import Notification from './screens/Notification';
 import Product from './screens/Product';
+import LoginProvider from './screens/navigation/LoginProvider';
 import {name as appName} from './app.json';
 
 AppRegistry.registerComponent(appName, () => App);

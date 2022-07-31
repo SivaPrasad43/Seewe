@@ -1,11 +1,50 @@
 /* eslint-disable prettier/prettier */
-import { View, Text, StyleSheet, TextInput, TouchableHighlight, Image, ImageBackground } from 'react-native'
-import React from 'react'
+import { View, Text, StyleSheet, TextInput,Image, TouchableHighlight,TouchableOpacity, ImageBackground } from 'react-native'
+import React,{useEffect,useState} from 'react'
 import Colors from '../contents/colors/Colors'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
+import ImagePicker from 'react-native-image-crop-picker';
 
+export default function Register() { 
 
-export default function Register() {
+    const [ProfileImg,SetProfileImg] = useState("https://cdn-icons-png.flaticon.com/512/61/61183.png")
+    const [Name,SetName] = useState("")
+    const [RegNum,SetRegNum] = useState("")
+    const [Password,SetPassword] = useState("")
+    const [ConfPassword,SetConfPassword] = useState("")
+
+    function LoadImg() {
+        ImagePicker.openPicker({
+          width: 300,
+          height: 300,
+          cropping: true
+        }).then(image => {
+          console.log(image.path)
+          SetProfileImg(image.path)
+          console.log(ProfileImg)
+        })
+      }
+
+    function Submit(){
+        firestore()
+        .collection('Register')
+        .add({
+          name: Name,
+          password: Password,
+          reg_number: RegNum
+        })
+        .then(() => {
+          console.log('User added!');
+        });
+        console.log("useEffect run")
+    }  
+
+    useEffect(()=>{
+        console.log("useEffect running")
+    }, []);
+    
   return (
     <View style={styles.container}>
       <ImageBackground source={require("../res/login_background.png")} resizeMode="cover" style={{flex:1,width:"100%",justifyContent:'center'}}/>    
@@ -13,12 +52,21 @@ export default function Register() {
           <View style={styles.line}/>
           <Text style = {styles.RegisterText}>Register</Text>
           <View style={{width: '100%',alignItems: 'center'}}>
+            <TouchableOpacity 
+                onPress = {LoadImg}>
+                <Image 
+                    source={{uri: ProfileImg}}
+                    style = {styles.ProfileImage}/>
+            </TouchableOpacity>
+            <Text>Upload Image</Text>
             <View style = {styles.InputContainer}>
                 <View style = {{flexDirection: "row",alignItems:"center"}}>
                     <Icon name="person" size={20} color={Colors.DEFAULT_BLACK} style={{marginRight: 10}}/>  
                     <TextInput
                         style = {styles.inputText} 
                         placeholder='Name'
+                        onChangeText={text=>SetName(text)}
+                        defaultValue = {Name}
                         placeholderTextColor= {Colors.DEFAULT_BLACK_LIGHT_2}/>
                 </View>
             </View>
@@ -28,6 +76,8 @@ export default function Register() {
                     <TextInput
                         style = {styles.inputText} 
                         placeholder='Register Number (eg: VDA19CS043)'
+                        onChangeText={text => SetRegNum(text)}
+                        defaultValue = {RegNum}
                         placeholderTextColor= {Colors.DEFAULT_BLACK_LIGHT_2}/>
                 </View>
             </View>
@@ -37,6 +87,8 @@ export default function Register() {
                     <TextInput
                         style = {styles.inputText} 
                         placeholder='Password'
+                        onChangeText={text=>SetPassword(text)}
+                        defaultValue={Password}
                         placeholderTextColor= {Colors.DEFAULT_BLACK_LIGHT_2}/>
                 </View>
             </View>
@@ -46,11 +98,15 @@ export default function Register() {
                     <TextInput
                         style = {styles.inputText} 
                         placeholder='Confirm Password'
+                        onChangeText={text => SetConfPassword(text)}
+                        defaultValue={ConfPassword}
                         placeholderTextColor= {Colors.DEFAULT_BLACK_LIGHT_2}/>
                 </View>
             </View>                                   
           </View>
-          <TouchableHighlight style={styles.LoginBtn}>
+          <TouchableHighlight 
+            style={styles.LoginBtn}
+            onPress={Submit}>
               <Text style={{fontWeight:'500',color:Colors.DEFAULT_BLACK}}>Register</Text>
           </TouchableHighlight>
       </View>
@@ -64,7 +120,7 @@ const styles = StyleSheet.create({
     },
     bottomView: {
         width: "100%",
-        height: 400,
+        height: 520,
         backgroundColor: 'white',
         position: 'absolute',
         elevation: 5,
@@ -122,4 +178,12 @@ const styles = StyleSheet.create({
         fontSize:25,
         marginVertical:10
     },
+    ProfileImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        justifyContent: "center",
+        alignItems: "center",
+        resizeMode: "cover"
+    }
 }) 

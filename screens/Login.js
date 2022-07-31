@@ -2,22 +2,56 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import { View, Text, StyleSheet, TextInput, TouchableHighlight, Image, ImageBackground } from 'react-native'
-import React,{useState,useEffect} from 'react'
+import React,{useState,useEffect, createContext} from 'react'
 import Colors from '../contents/colors/Colors'
+import Home from './Home'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import firestore from '@react-native-firebase/firestore';
 
 export default function Login({navigation}) {
 
     const [username,setUsername] = useState("")
     const [password,setPassword] = useState("")
+    const [UserData,SetUserData] = useState("")
 
-    const SetData = (user,pass)=>{
+    const context = createContext()
+
+    useEffect(()=>{
+        firestore()
+        .collection('Register')
+        .get()
+        .then(querySnapshot => {
+            const UserData = []
+            console.log('Total users: ', querySnapshot.size);
+            querySnapshot.forEach(doc => {
+            console.log('User ID: ', doc.id, doc.data());
+            const {name,password,reg_number} = doc.data()
+            UserData.push({
+                uid : doc.id,
+                name,
+                password,
+                reg_number
+              })
+            SetUserData(UserData)  
+            }); 
+        });
+    },[])
+
+    function CheckLogin(user,pass){
         console.log("username: ",user)
         console.log("password ",pass)
+        UserData.forEach(item => {
+            console.log(item.name)
+            try {
+                if (item.reg_number == user && item.password == pass){
+                    navigation.navigate('TabNavigation')
+                }             
+            } catch (error) {
+                console.warn(e);
+            }
+        })
     }
-
-
   return (
     <View style={styles.container}>
       <ImageBackground source={require('../res/login_background.png')} resizeMode="cover" style={{flex:1,width:"100%",justifyContent:'center'}}/>
@@ -49,8 +83,13 @@ export default function Login({navigation}) {
           </View>
           <TouchableOpacity 
           style={styles.LoginBtn}
-          onPress={()=>navigation.navigate('TabNavigation')}>
+          onPress={()=>CheckLogin(username,password)}>
               <Text style={{fontWeight:'500',fontSize: 15,color:Colors.DEFAULT_BLACK}}>Login</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+          style={styles.LoginBtn}
+          onPress={()=>navigation.navigate("TabNavigation")}>
+              <Text style={{fontWeight:'500',fontSize: 15,color:Colors.DEFAULT_BLACK}}>Go to Home</Text>
           </TouchableOpacity>
           <View style={{flexDirection: 'row'}}>
             <Text style={{color: Colors.DEFAULT_BLACK_LIGHT_2}}>Don't you have an account?</Text>

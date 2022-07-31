@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React,{useEffect} from 'react'
 import Colors from '../contents/colors/Colors'
 import  Icon  from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useNavigation } from '@react-navigation/native';
@@ -10,6 +10,7 @@ const productImg = require("../res/product.jpg")
 
 export default function Product({fname}) {
     const navigation = useNavigation()
+
   return (
     <View style={styles.container}>
         <View style={styles.ImageConatiner}>
@@ -21,7 +22,7 @@ export default function Product({fname}) {
             <View style={styles.TitleContainer}>
                 <View style={styles.ProductTitle}>
                     <Text style={{fontWeight: "500"}}>Product Name</Text>
-                    <Text style={styles.TitleText}>{navigation.getParam("name")}</Text>
+                    <Text style={styles.TitleText}></Text>
                 </View>
             </View>
             <Text style={{marginTop: 6,fontWeight: "500"}}>Discription</Text>

@@ -4,7 +4,7 @@ import React,{useEffect} from 'react';
 
 export default function Intro({navigation}) {
   useEffect(()=>{
-    setTimeout(()=> {navigation.navigate("LoginNavigation")},2000)
+    setTimeout(()=> {navigation.navigate("LoginIntro" , {screen: "Login2"})},2000)
   })
   return (
     <View style={styles.container}>

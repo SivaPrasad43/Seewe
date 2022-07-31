@@ -1,10 +1,12 @@
 /* eslint-disable prettier/prettier */
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import Colors from '../contents/colors/Colors'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import ProductCategory from '../components/ProductCategory'
 import ImagePicker from 'react-native-image-crop-picker';
+import firestore from '@react-native-firebase/firestore';
+import CList from '../contents/Category_items'
 
 const data = [
   { value: 'Apple' },
@@ -28,10 +30,19 @@ function LoadImg() {
 }
 
 function DisplayData(ProductName,Discription,Price){
-  console.log(ProductName)
-  console.log(Discription)
-  console.log(Price)
-  console.log(ImgPath)
+  firestore()
+  .collection('productList')
+  .add({
+    Category: "",
+    ProductName: ProductName,
+    Discription: Discription,
+    Price : Price,
+    Image: ""
+  })
+  .then(() => {
+    console.log('Product added!');
+  });
+  console.log("useEffect run")
 }
 
 export default function SellItem() {
@@ -60,7 +71,7 @@ export default function SellItem() {
       </View>
       <View>
         <Text style={styles.inputText}>Category</Text>
-        <ProductCategory data={data}/>
+        <ProductCategory/>
       </View>
       <View style={{marginVertical: 5}}>
         <Text style={styles.inputText}>Discription</Text>

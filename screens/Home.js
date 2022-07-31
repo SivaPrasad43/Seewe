@@ -1,7 +1,5 @@
-/* eslint-disable react/self-closing-comp */
-/* eslint-disable no-trailing-spaces */
-/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
+
 import { Text,View, ScrollView, FlatList,StyleSheet, } from 'react-native'
 import React, {useState,useEffect} from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -12,51 +10,75 @@ import ProductCard from '../components/ProductCard.js';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import SellItem from './SellItem.js';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import database from '@react-native-firebase/database'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
+import { CList1 } from '../contents/Category_items.js';
 
-const Category_items = [
-  {name : "All" },
-  {name : "Category-1" },
-  {name : "Category-2" },
-  {name : "Category-3" },
-  {name : "Category-4" }
-]
-
-const product = [
-  {id : 1,name: "Sivaprasadhgvxhgasvxhgavshgav",discription : "blah bah blah sdvsdblah blah sdghcvshgdcvfvv sdfdsfsfd  sdfsdfsshg",price:"100"},
-  {id : 2,name: "rahul krishna",discription : "blah bah blah blah blah",price:"50"},
-  {id : 3,name: "nadhil",discription : "blah bah blah blah blah",price:"140"},
-  {id : 4,name: "buji",discription : "blah bah blah blah blah",price:"120"},
-  {id : 5,name: "product-5",discription : "blah bah blah blah blah",price:"300"},
-  {id : 6,name: "product-6",discription : "blah bah blah blah blah",price:"140"},
-  {id : 7,name: "product-7",discription : "blah bah blah blah blah",price:"120"},
-]
-
-let ItemRef = database().ref('/Item')
-
+// const product = [
+//   {id : 1,name: "Sivaprasadhgvxhgasvxhgavshgav",discription : "blah bah blah sdvsdblah blah sdghcvshgdcvfvv sdfdsfsfd  sdfsdfsshg",price:"100"},
+//   {id : 2,name: "rahul krishna",discription : "blah bah blah blah blah",price:"50"},
+//   {id : 3,name: "nadhil",discription : "blah bah blah blah blah",price:"140"},
+//   {id : 4,name: "buji",discription : "blah bah blah blah blah",price:"120"},
+//   {id : 5,name: "product-5",discription : "blah bah blah blah blah",price:"300"},
+//   {id : 6,name: "product-6",discription : "blah bah blah blah blah",price:"140"},
+//   {id : 7,name: "product-7",discription : "blah bah blah blah blah",price:"120"},
+// ]
 
 const HomeScreen = () => {
 
   const [username,setUsername] = useState("")
-
-  useEffect(() => {
-    ItemRef.on('value',snapshot => {
-        let data = snapshot.val()
-        const items = Object.values(data)
-        setUsername(items)
-        console.log(username)
-  })},[])
+  const [Product,SetProduct] = useState([])
+  const [ActiveIndex,SetActiveIndex] = useState(0)
 
   const navigation = useNavigation(); 
 
+  useEffect(()=>{
+    firestore()
+    .collection('productList')
+    .get()
+    .then(
+        querySnapshot => {
+          const Product = []
+          querySnapshot.forEach(doc => {
+          const {ProductName,Discription,Price} = doc.data()
+          Product.push({
+            id : doc.id,
+            ProductName,
+            Discription,
+            Price
+          })
+          console.log(Product)
+          SetProduct(Product)
+        })
+    })
+  },[])
+
+  const ProductCardRender = ({item}) => (
+    <ProductCard name={item.ProductName} discription={item.Discription} price = {item.Price}/>
+  )
+
+  const CategoryList = () => {
+    return(
+      <View style={{flexDirection: "row",justifyContent:"space-between"}}>
+        {CList1.map((item,index)=>(
+          <TouchableOpacity
+            key={index}
+            onPress={()=>SetActiveIndex(index)} 
+            >
+              <Text style={[styles.CategoryText, ActiveIndex == index && styles.CategoryActive]}>{item}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    )
+  }
+
   return (
-    <View style={styles.conatiner}>
+    <View style={styles.container}>
           <View style={styles.HomeHeaderBottom}>
             <View>
-              <Text style={styles.HomeTitle}>Hi</Text>
-              <Text style={styles.HomeSubTitle}>Good Morning</Text>
+              <Text style={styles.HomeSubTitle}>Welcome to</Text>
+              <Text style={styles.HomeTitle}>Seewe Market</Text>
             </View>
             <TouchableOpacity 
               style={styles.sellItBtn}
@@ -65,27 +87,17 @@ const HomeScreen = () => {
               <Text style={{fontWeight:"bold",color:"white"}}>Sell Item</Text>
             </TouchableOpacity>
           </View>
-          <View>
-            <ScrollView>
-              <FlatList
-                data={Category_items}
-                horizontal
-                keyExtractor={(item)=>item.name}
-                showsHorizontalScrollIndicator={false}
-                ListHeaderComponent={()=> <ItemSeparator width={10}/>}
-                ListFooterComponent={()=> <ItemSeparator width={10}/>}
-                renderItem={({item})=><Category name = {item.name}/>}>  
-              </FlatList>
-            </ScrollView>
+          <View style={{paddingHorizontal: 20}}>
+              <CategoryList/> 
           </View>
           <ScrollView style={{marginTop: 10}}>
             <View 
               style={{margin: "2%"}}>
               <FlatList
-                data={product}
+                data={Product}
                 numColumns={2}
-                keyExtractor={(item) => item.id}
-                renderItem={({item}) =><ProductCard name={item.name} discription={item.discription} price = {item.price}/>}>
+                keyExtractor={item =>item.id}
+                renderItem={ProductCardRender}>
               </FlatList>
             </View>
           </ScrollView>
@@ -100,7 +112,17 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
-  conatiner: {
+  CategoryText:{
+    fontSize: 15,
+    paddingHorizontal: 5,
+    paddingVertical: 3
+  },
+  CategoryActive:{
+    color: Colors.BUTTON_COLOR,
+    borderBottomWidth: 4,
+    borderBottomColor: Colors.BUTTON_COLOR
+  },
+  container: {
     flex: 1,
     backgroundColor: "white"
   },
@@ -111,12 +133,13 @@ const styles = StyleSheet.create({
     alignItems:"center"
   },
   HomeTitle: {
-    color: Colors.DEFAULT_BLACK,
-    fontSize:23,
-    fontWeight: "bold"
+    color: Colors.BUTTON_COLOR,
+    fontSize:25,
+    fontWeight: "bold",
   },
   HomeSubTitle:{
-    color: Colors.DEFAULT_BLACK_LIGHT_2,
+    fontSize: 18,
+    color: Colors.DEFAULT_BLACK_LIGHT_1,
   },
   sellItBtn:{
     width: 100,

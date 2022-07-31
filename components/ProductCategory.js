@@ -1,18 +1,19 @@
 /* eslint-disable prettier/prettier */
 import { View, Text,Pressable,StyleSheet } from 'react-native'
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import Colors from '../contents/colors/Colors'
+import { CList2 } from '../contents/Category_items'
 
-export default function ProductCategory({data}) {
+export default function ProductCategory() {
     const [ProductOption,SetProductOption] = useState(null)
 
     return (
         <View>
             <View style={styles.CategoryContainer}>
-                {data.map((item)=>{
+                {CList2.map((item)=>{
                     return(
-                        <Pressable style={styles.SelectBtn} onPress={() => SetProductOption(item.value)}>
-                            <Text style={styles.CategoryText}>{item.value}</Text>
+                        <Pressable style={styles.SelectBtn} onPress={() => SetProductOption(item.name)}>
+                            <Text style={styles.CategoryText}>{item.name}</Text>
                         </Pressable>
                     )
                 })}
