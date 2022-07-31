@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Home from '../Home';
 import SellItem from '../SellItem';
 import Product from '../Product';
+import Notification from '../Notification';
 
 export default function HomeNavigation() {
     const HomeStack = createStackNavigator()

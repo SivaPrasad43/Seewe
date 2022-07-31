@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 
-import { Text,View, ScrollView, FlatList,StyleSheet, } from 'react-native'
+import { Text,View, FlatList,StyleSheet, ActivityIndicator,Image } from 'react-native'
 import React, {useState,useEffect} from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Category from '../components/Category.js';
@@ -14,22 +14,14 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import { CList1 } from '../contents/Category_items.js';
-
-// const product = [
-//   {id : 1,name: "Sivaprasadhgvxhgasvxhgavshgav",discription : "blah bah blah sdvsdblah blah sdghcvshgdcvfvv sdfdsfsfd  sdfsdfsshg",price:"100"},
-//   {id : 2,name: "rahul krishna",discription : "blah bah blah blah blah",price:"50"},
-//   {id : 3,name: "nadhil",discription : "blah bah blah blah blah",price:"140"},
-//   {id : 4,name: "buji",discription : "blah bah blah blah blah",price:"120"},
-//   {id : 5,name: "product-5",discription : "blah bah blah blah blah",price:"300"},
-//   {id : 6,name: "product-6",discription : "blah bah blah blah blah",price:"140"},
-//   {id : 7,name: "product-7",discription : "blah bah blah blah blah",price:"120"},
-// ]
+import AppBar from '../components/AppBar.js';
 
 const HomeScreen = () => {
 
   const [username,setUsername] = useState("")
   const [Product,SetProduct] = useState([])
   const [ActiveIndex,SetActiveIndex] = useState(0)
+  const [loading,SetLoading] = useState(true) 
 
   const navigation = useNavigation(); 
 
@@ -50,6 +42,8 @@ const HomeScreen = () => {
           })
           console.log(Product)
           SetProduct(Product)
+          SetLoading(false)
+          
         })
     })
   },[])
@@ -64,9 +58,8 @@ const HomeScreen = () => {
         {CList1.map((item,index)=>(
           <TouchableOpacity
             key={index}
-            onPress={()=>SetActiveIndex(index)} 
-            >
-              <Text style={[styles.CategoryText, ActiveIndex == index && styles.CategoryActive]}>{item}</Text>
+            onPress={()=>SetActiveIndex(index)} >
+              <Text style={[styles.CategoryText, ActiveIndex === index && styles.CategoryActive]}>{item}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -75,6 +68,13 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
+          {loading ? (
+          <ActivityIndicator
+            style={styles.Loader}
+            visible = {loading}
+            size = "large"
+          />):(<></>)}
+          <AppBar/>
           <View style={styles.HomeHeaderBottom}>
             <View>
               <Text style={styles.HomeSubTitle}>Welcome to</Text>
@@ -90,17 +90,16 @@ const HomeScreen = () => {
           <View style={{paddingHorizontal: 20}}>
               <CategoryList/> 
           </View>
-          <ScrollView style={{marginTop: 10}}>
             <View 
               style={{margin: "2%"}}>
               <FlatList
                 data={Product}
                 numColumns={2}
                 keyExtractor={item =>item.id}
+                showsVerticalScrollIndicator={false}
                 renderItem={ProductCardRender}>
               </FlatList>
             </View>
-          </ScrollView>
     </View>
   ) 
 }
@@ -118,38 +117,44 @@ const styles = StyleSheet.create({
     paddingVertical: 3
   },
   CategoryActive:{
-    color: Colors.BUTTON_COLOR,
+    color: Colors.THEME_COLOR,
     borderBottomWidth: 4,
-    borderBottomColor: Colors.BUTTON_COLOR
+    borderBottomColor: Colors.THEME_COLOR
   },
   container: {
     flex: 1,
     backgroundColor: "white"
   },
   HomeHeaderBottom : {
-    padding: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
     flexDirection:"row",
     justifyContent:"space-between",
     alignItems:"center"
   },
   HomeTitle: {
-    color: Colors.BUTTON_COLOR,
-    fontSize:25,
+    color: Colors.THEME_COLOR,
+    fontSize:23,
     fontWeight: "bold",
   },
   HomeSubTitle:{
-    fontSize: 18,
+    fontSize: 16,
     color: Colors.DEFAULT_BLACK_LIGHT_1,
   },
   sellItBtn:{
     width: 100,
     height: 40,
-    backgroundColor: Colors.BUTTON_COLOR,
+    backgroundColor: Colors.THEME_COLOR,
     flexDirection:"row",
     elevation: 5,
     borderRadius: 50,
     marginVertical:10,
     justifyContent: "center",
     alignItems: "center"
+  },
+  Loader: {
+    position:"absolute",
+    left: "45%",
+    top: "50%"
   }
 })

@@ -9,8 +9,9 @@ import ImagePicker from 'react-native-image-crop-picker';
 
 export default function Register() { 
 
-    const [ProfileImg,SetProfileImg] = useState("https://cdn-icons-png.flaticon.com/512/61/61183.png")
+    const [ProfileImgAdd,SetProfileImgAdd] = useState("https://cdn-icons-png.flaticon.com/512/61/61183.png")
     const [Name,SetName] = useState("")
+    const [ProfileImg,SetProfileImg] = useState("")
     const [RegNum,SetRegNum] = useState("")
     const [Password,SetPassword] = useState("")
     const [ConfPassword,SetConfPassword] = useState("")
@@ -22,8 +23,8 @@ export default function Register() {
           cropping: true
         }).then(image => {
           console.log(image.path)
+          SetProfileImgAdd(image.path)
           SetProfileImg(image.path)
-          console.log(ProfileImg)
         })
       }
 
@@ -43,7 +44,9 @@ export default function Register() {
 
     useEffect(()=>{
         console.log("useEffect running")
-    }, []);
+        console.log("selected image : ",ProfileImg)
+        console.log("added image : ",ProfileImgAdd)
+    });
     
   return (
     <View style={styles.container}>
@@ -55,7 +58,7 @@ export default function Register() {
             <TouchableOpacity 
                 onPress = {LoadImg}>
                 <Image 
-                    source={{uri: ProfileImg}}
+                    source={{uri: ProfileImgAdd}}
                     style = {styles.ProfileImage}/>
             </TouchableOpacity>
             <Text>Upload Image</Text>

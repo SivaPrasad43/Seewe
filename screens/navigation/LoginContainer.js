@@ -47,7 +47,7 @@ const closeConfig = {
   }
 
 const LoginContainer = ()=>{
-  return  <StackNavigator/>
+  return <StackNavigator />
 }
 
 export default LoginContainer

@@ -6,16 +6,6 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import ProductCategory from '../components/ProductCategory'
 import ImagePicker from 'react-native-image-crop-picker';
 import firestore from '@react-native-firebase/firestore';
-import CList from '../contents/Category_items'
-
-const data = [
-  { value: 'Apple' },
-  { value: 'Samsung' },
-  { value: 'Blackberry' },
-  { value: 'Apple' },
-  { value: 'Samsung' },
-  { value: 'Blackberry' },
-];
 
 var ImgPath=""
 
@@ -144,7 +134,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
         borderRadius: 50,
-        backgroundColor: Colors.DEFAULT_YELLOW
+        backgroundColor: Colors.DEFAULT_YELLOW,
     },
     UploadImg : {
         width: "40%",

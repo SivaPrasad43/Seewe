@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 const rupee = "₹"
 const productImg = require("../res/product.jpg")
 
-export default function Product({fname}) {
+export default function Product() {
     const navigation = useNavigation()
 
   return (

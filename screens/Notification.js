@@ -2,6 +2,7 @@
 import { View, ScrollView,FlatList } from 'react-native'
 import React from 'react'
 import NotificationCard from '../components/NotificationCard'
+import AppBar from '../components/AppBar'
 
 const Notifications = [
     {
@@ -33,15 +34,12 @@ const Notifications = [
 export default function Notification() {
   return (
     <View>
-        <ScrollView>
-            <View>
-              <FlatList
-                data={Notifications}
-                keyExtractor={(item) => item.id}
-                renderItem={({item}) =><NotificationCard title={item.title} date = {item.date} data= {item.data}/>}>
-              </FlatList>
-            </View>
-          </ScrollView>
+      <AppBar/>
+        <FlatList
+            data={Notifications}
+            keyExtractor={(item) => item.id}
+            renderItem={({item}) =><NotificationCard title={item.title} date = {item.date} data= {item.data}/>}>
+        </FlatList>
     </View>
   )
 }
