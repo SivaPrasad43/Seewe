@@ -27,6 +27,7 @@ const ProductCard = ({userid,id,name,description,price}) => {
     const user = id
     console.log("uuuuusseeer : ",user)
     console.log("userid---->",userid)
+
     let addItem = ()=>{
         database().ref('/Fav/'+id).push({
             id: id,
@@ -83,7 +84,7 @@ const ProductCard = ({userid,id,name,description,price}) => {
         </TouchableOpacity> 
         <TouchableOpacity 
             style={styles.ProductConatainer}
-            onPress={()=>navigation.navigate('Product',{PName: name, Disc: description, Price: price,PImage: url})}>
+            onPress={()=>navigation.navigate('Product',{userid : userid ,PName: name, Disc: description, Price: price,PImage: url})}>
             <View style={styles.ImageConatiner}>
                 <Image
                     style={styles.ProductImage}
@@ -100,11 +101,11 @@ const ProductCard = ({userid,id,name,description,price}) => {
                         numberOfLines={2}
                         ellipsizeMode="tail">{description}</Text>
                 </View>
-                <View style={styles.UserData}>
+                {/* <View style={styles.UserData}>
                     <Image 
                         style={styles.UserImage}
                         source={owner ? {uri: owner } : {uri: link}}></Image>
-                </View>
+                </View> */}
             </View>
             <View style={styles.ProductPrize}>
                         <Text style={styles.PriceTitle}>Price</Text>
@@ -118,7 +119,7 @@ const ProductCard = ({userid,id,name,description,price}) => {
 const  styles = StyleSheet.create({
     ProductConatainer:{
         width: "100%",
-        height: 230,
+        height: 240,
         borderRadius: 5,
         borderWidth: 1,
         borderColor: Colors.DEFAULT_LIGHT_GRAY,
@@ -144,10 +145,11 @@ const  styles = StyleSheet.create({
         alignItems: "center"
     },
     ProductData: {
-        width: "70%"
+        width: "90%"
     },
     ProductName:{
-        fontWeight: "bold"
+        fontWeight: "bold",
+        fontSize:17
     },
     ProductDisc:{
         fontSize:9
@@ -160,7 +162,6 @@ const  styles = StyleSheet.create({
     PriceTitle:{
         fontSize: 10,
         fontWeight:"800",
-        marginTop: 3
     },
     Price: {
         fontWeight: "bold",

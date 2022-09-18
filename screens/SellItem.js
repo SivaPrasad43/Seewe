@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native'
 import React,{useEffect, useState} from 'react'
 import Colors from '../contents/colors/Colors'
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -20,10 +20,11 @@ const secondaryStorageBucket = firebase.app().storage('gs://seewe-762fa.appspot.
 
 const reference = secondaryStorageBucket.ref("imageName/image.jpeg");
 
-function DisplayData(ProductName,Discription,Price,Category){
+function DisplayData(userid,ProductName,Discription,Price,Category){
   firestore()
   .collection('productList')
   .add({
+    userid: userid,
     id : id,
     Category: Category,
     ProductName: ProductName,
@@ -95,89 +96,91 @@ export default function SellItem({navigation,route}) {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={{marginVertical: 5}}>
-        <Text style={styles.inputText}>Product name</Text>
-        <View style = {styles.inputContainer}>
-              <View style = {{flexDirection: "row",alignItems:"center"}}>
-              <Icon name="shopping-basket" size={16} color={Colors.DEFAULT_BLACK} style={{marginRight: 10}}/>  
-                <TextInput
-                    style = {styles.inputText} 
-                    value = {ProductName}
-                    onChangeText = {SetProductName}
-                    placeholder='Enter Product Name'
-                    placeholderTextColor= {Colors.DEFAULT_BLACK_LIGHT_2}/>
-              </View>
-          </View>
-      </View>
-      <View>
-        <Text style={styles.inputText}>Category</Text>
-        <View>
-            <View style={styles.CategoryContainer}>
-                {CList2.map((item,index)=>{
-                    return(
-                        <TouchableOpacity 
-                            key={index} 
-                            style={[styles.SelectBtn,Active === index && styles.ActiveSelectBtn]} 
-                            onPress={() => {SetCategory(item),SetActive(index)}}>
-                            <Text style={[styles.CategoryText,Active === index && {color:"white"}]}>{item}</Text>
-                        </TouchableOpacity>
-                    )
-                })}
-            </View>
-            <View>
-                <Text>Selected option: {Category}</Text>
+    <ScrollView>
+      <View style={styles.container}>
+        <View style={{marginVertical: 5}}>
+          <Text style={styles.inputText}>Product name</Text>
+          <View style = {styles.inputContainer}>
+                <View style = {{flexDirection: "row",alignItems:"center"}}>
+                <Icon name="shopping-basket" size={16} color={Colors.DEFAULT_BLACK} style={{marginRight: 10}}/>  
+                  <TextInput
+                      style = {styles.inputText} 
+                      value = {ProductName}
+                      onChangeText = {SetProductName}
+                      placeholder='Enter Product Name'
+                      placeholderTextColor= {Colors.DEFAULT_BLACK_LIGHT_2}/>
+                </View>
             </View>
         </View>
-      </View>
-      <View style={{marginVertical: 5}}>
-        <Text style={styles.inputText}>Discription</Text>
-        <View style = {styles.inputContainer}>
-              <View style = {{flexDirection: "row",alignItems:"center"}}>
-                <TextInput
-                    style = {styles.inputText} 
-                    multiline={true}
-                    value = {Discription}
-                    onChangeText = {SetDiscription}
-                    placeholder='Enter Discription'
-                    placeholderTextColor= {Colors.DEFAULT_BLACK_LIGHT_2}/>
+        <View>
+          <Text style={styles.inputText}>Category</Text>
+          <View>
+              <View style={styles.CategoryContainer}>
+                  {CList2.map((item,index)=>{
+                      return(
+                          <TouchableOpacity 
+                              key={index} 
+                              style={[styles.SelectBtn,Active === index && styles.ActiveSelectBtn]} 
+                              onPress={() => {SetCategory(item),SetActive(index)}}>
+                              <Text style={[styles.CategoryText,Active === index && {color:"white"}]}>{item}</Text>
+                          </TouchableOpacity>
+                      )
+                  })}
+              </View>
+              <View>
+                  <Text>Selected option: {Category}</Text>
               </View>
           </View>
+        </View>
+        <View style={{marginVertical: 5}}>
+          <Text style={styles.inputText}>Discription</Text>
+          <View style = {styles.inputContainer}>
+                <View style = {{flexDirection: "row",alignItems:"center"}}>
+                  <TextInput
+                      style = {styles.inputText} 
+                      multiline={true}
+                      value = {Discription}
+                      onChangeText = {SetDiscription}
+                      placeholder='Enter Discription'
+                      placeholderTextColor= {Colors.DEFAULT_BLACK_LIGHT_2}/>
+                </View>
+            </View>
+        </View>
+        <View style={{marginVertical: 5}}>
+          <Text style={styles.inputText}>Price</Text>
+          <View style = {styles.inputContainer}>
+                <View style = {{flexDirection: "row",alignItems:"center"}}>
+                  <Icon name="rupee" size={20} color={Colors.DEFAULT_BLACK} style={{marginRight: 10}}/>  
+                  <TextInput
+                      style = {styles.inputText} 
+                      placeholder='Enter Product Price'
+                      keyboardType='number-pad'
+                      value={Price}
+                      onChangeText={SetPrice}
+                      placeholderTextColor= {Colors.DEFAULT_BLACK_LIGHT_2}/>
+                </View>
+            </View>
+        </View>
+        <View style={{marginVertical: 5,flexDirection: "row", justifyContent:"center"}}>
+          <TouchableOpacity 
+            style={styles.UploadImg}
+            onPress={LoadImg}>
+            <Text style={{color: "white",fontWeight:'500',fontSize: 15,textAlign:"center"}}>Upload Image</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{flexDirection: "row", justifyContent:"center"}}>
+          <TouchableOpacity 
+            style={styles.SubmitBtn}
+            onPress={()=>{
+              DisplayData(userid,ProductName,Discription,Price,Category)
+              uploadImage(ImgPath)
+              navigation.navigate('Home2')
+            }}>
+              <Text style={{fontWeight:'500',fontSize: 15,textAlign:"center"}}>Submit</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={{marginVertical: 5}}>
-        <Text style={styles.inputText}>Price</Text>
-        <View style = {styles.inputContainer}>
-              <View style = {{flexDirection: "row",alignItems:"center"}}>
-                <Icon name="rupee" size={20} color={Colors.DEFAULT_BLACK} style={{marginRight: 10}}/>  
-                <TextInput
-                    style = {styles.inputText} 
-                    placeholder='Enter Product Price'
-                    keyboardType='number-pad'
-                    value={Price}
-                    onChangeText={SetPrice}
-                    placeholderTextColor= {Colors.DEFAULT_BLACK_LIGHT_2}/>
-              </View>
-          </View>
-      </View>
-      <View style={{marginVertical: 5,flexDirection: "row", justifyContent:"center"}}>
-        <TouchableOpacity 
-          style={styles.UploadImg}
-          onPress={LoadImg}>
-          <Text style={{color: "white",fontWeight:'500',fontSize: 15,textAlign:"center"}}>Upload Image</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={{flexDirection: "row", justifyContent:"center"}}>
-        <TouchableOpacity 
-          style={styles.SubmitBtn}
-          onPress={()=>{
-            DisplayData(ProductName,Discription,Price,Category)
-            uploadImage(ImgPath)
-            navigation.navigate('Home2')
-          }}>
-            <Text style={{fontWeight:'500',fontSize: 15,textAlign:"center"}}>Submit</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </ScrollView>
   )
 }
 

@@ -1,9 +1,11 @@
 /* eslint-disable prettier/prettier */
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView,ScrollView } from 'react-native'
 import React,{useEffect,useState} from 'react'
 import Colors from '../contents/colors/Colors'
 import  Icon  from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useNavigation } from '@react-navigation/native';
+import storage,{ firebase } from '@react-native-firebase/storage'
+
 
 const rupee = "₹"
 const productImg = require("../res/product.jpg")
@@ -12,46 +14,78 @@ const link = 'https://firebasestorage.googleapis.com/v0/b/seewe-762fa.appspot.co
 
 export default function Product({navigation,route}) {
 
-    
+    const [id,SetId] = useState(route.params.id)
     const [Product,SetProductName] = useState(route.params.PName) 
     const [Disc,SetDisc] = useState(route.params.Disc)
     const [Price,SetPrice] = useState(route.params.Price)
+    const [userid,Setuserid] = useState(route.params.userid)
+    const [url,setUrl] = useState("")
     let Images = route.params.PImage
     console.log("images: ",Images)
 
+    async function getImage() {
+        const url = await storage()
+        .ref('user/'+ userid + '.jpeg')
+        .getDownloadURL()
+        console.log("download : ",url)
+        setUrl(url)
+      }
+
+    useEffect(() => {
+        getImage()
+    })  
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
         <View style={styles.ImageConatiner}>
             <Image
                 style={styles.ProductImage} 
                 source={Images ? {uri: Images } : {uri: link}}></Image>
         </View>
-        <View style={styles.ProductContainer}>
-            <View style={styles.TitleContainer}>
-                <View style={styles.ProductTitle}>
-                    <Text style={{fontSize: 11}}>Product Name</Text>
-                    <Text style={styles.TitleText}>{Product}</Text>
+        <ScrollView>
+            <View style={styles.ProductContainer}>
+                <View style={styles.TitleContainer}>
+                    <View style={{width:"100%",flexDirection:"row",justifyContent:"space-between"}}>
+                        <View style={styles.ProductTitle}>
+                            <Text style={{fontSize: 11,color: "black",fontWeight:"500"}}>PRODUCT NAME</Text>
+                            <Text style={styles.TitleText}>{Product}</Text>
+                        </View>
+                        <View>
+                            <Text style={{marginTop: 5,fontSize: 11,color:"black",fontWeight:"500",textAlign:"right"}}>PRICE</Text>
+                            <Text style={styles.PriceText}>{rupee}{Price}</Text>
+                        </View>
+                    </View>
+                </View>
+                <View style={{borderTopWidth:1,borderBottomWidth:1,marginTop:15,paddingBottom:10,borderColor:"lightgray"}}>
+                    <Text style={{marginTop: 6,fontSize: 11,color: "black",fontWeight:"500",marginBottom:2}}>OWNER</Text>
+                    <View style={{flexDirection:"row",marginTop:6}}>
+                        <Image 
+                            style = {styles.ProfileImg}
+                            source={url ? {uri: url } : {uri: link}}
+                            />
+                        <View>
+                            <Text style={{fontWeight:"bold",fontSize:14}}>Sivaprasad</Text>
+                            <Text style={{fontSize: 10}}>VDA19CS043</Text>
+                        </View>
+                    </View>
+                </View>
+                <View style={{marginTop:5}}>
+                    <Text style={{marginTop: 10,fontSize: 11,color: "black",fontWeight:"500",marginBottom:2}}>DESCRIPTION</Text>
+                    <Text style={{width: "90%",fontSize: 16}}>{Disc}</Text>
                 </View>
             </View>
-            <Text style={{marginTop: 6,fontSize: 11}}>Discription</Text>
-            <Text style={{width: "90%",fontSize: 16}}>{Disc}</Text>
-            <View>
-                <Text style={{marginTop: 10,fontSize: 11}}>Price</Text>
-                <Text style={styles.PriceText}>{rupee}{Price}</Text>
-            </View>
-        </View>
-        <View style={{flex:1,alignItems: "center"}}>
+        </ScrollView>
+        <View style={{flex:1,alignItems:"flex-end",marginRight:10}}>
             <View style={styles.ProfileContainer}>
-                <View style = {styles.Profile}>
-                    <Image style = {styles.ProfileImg}/>
+                {/* <View style = {styles.Profile}>
                     <Text style={{fontSize: 15,fontWeight: "500",marginHorizontal:5}}>Sivaprasad</Text>
-                </View>
+                </View> */}
                 <TouchableOpacity  style={styles.whatsapp}>
                     <Icon name='whatsapp' size={25} color="white"/>
                 </TouchableOpacity>
             </View>
         </View>
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -65,7 +99,12 @@ const styles = StyleSheet.create({
         backgroundColor: "lightgray"
     },
     ProductContainer: {
-        padding: 10
+        padding: 10,
+        margin: 15,
+        backgroundColor: "white",
+        borderRadius: 8,
+        elevation: 3,
+        marginBottom: 80
     },
     ProductImage: {
         width: "100%",
@@ -77,49 +116,53 @@ const styles = StyleSheet.create({
         justifyContent: "space-between"
     },
     ProductTitle: {
-        width: "80%",
-        marginVertical: 5
+        width:"75%",
+        marginVertical: 5,
+        justifyContent: "flex-end"
     },
     TitleText: {
-        fontSize: 20,
+        fontSize: 25,
         color: Colors.DEFAULT_BLACK,
         fontWeight: "600"
     },
     PriceText: {
-        fontSize: 26,
+        fontSize: 25,
         color: "green",
         fontWeight: "600"
     },
     ProfileContainer: {
-        width: "90%",
+        // width: "60%",
         flexDirection: "row",
         justifyContent:"space-between",
         alignItems: "center",
         margin: 5,
         padding: 6,
+        backgroundColor:"green",
         borderRadius: 50,
         borderWidth: 1,
         borderColor: "green",
         position: "absolute",
-        bottom: 0
+        bottom: 8,
+        elevation: 5
     },
     Profile:{
         flexDirection: "row",
         alignItems: "center"
     },
     ProfileImg:{
-        width: 45,
-        height: 45,
+        width: 35,
+        height: 35,
         borderRadius: 50,
+        marginRight: 8,
         backgroundColor: "lightgray",
         padding: 5
     },
     whatsapp: {
-        width: 40,
-        height: 40,
+        width: 45,
+        height: 45,
         justifyContent:"center",
         alignItems: "center",
         borderRadius: 50,
-        backgroundColor: "green"
+        backgroundColor: "green",
     }
 })

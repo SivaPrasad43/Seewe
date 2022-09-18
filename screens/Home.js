@@ -33,7 +33,6 @@ const HomeScreen = ({uid,uname,ureg}) => {
   const [loading,SetLoading] = useState(true) 
   const [Fav,setFav] = useState([])
   const [url,setUrl] = useState("")
-  const [userid,setUserid] = useState("")
 
   const navigation = useNavigation(); 
 
@@ -48,6 +47,7 @@ const HomeScreen = ({uid,uname,ureg}) => {
           const Plist = doc.data()
           // console.log(Plist)
           Product.push({
+            userid: Plist.userid, 
             id: Plist.id,
             name: Plist.ProductName,
             disc: Plist.Discription,
@@ -80,7 +80,6 @@ const HomeScreen = ({uid,uname,ureg}) => {
     .getDownloadURL()
     console.log("download : ",url)
     setUrl(url)
-    setUserid(uid)
   }
 
   const FavItems = Product.map(product => product.id)
@@ -103,7 +102,7 @@ const HomeScreen = ({uid,uname,ureg}) => {
   },[ActiveIndex])
  
   const ProductCardRender = ({item}) => (
-    <ProductCard userid={userid} id={item.id} name={item.name} description={item.disc} price = {item.price}/>
+    <ProductCard userid={item.userid} id={item.id} name={item.name} description={item.disc} price = {item.price}/>
   )
 
   const CategoryList = () => {
