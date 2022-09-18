@@ -1,35 +1,43 @@
 /* eslint-disable prettier/prettier */
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
-import React,{useEffect} from 'react'
+import React,{useEffect,useState} from 'react'
 import Colors from '../contents/colors/Colors'
 import  Icon  from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useNavigation } from '@react-navigation/native';
 
 const rupee = "₹"
 const productImg = require("../res/product.jpg")
+const url = ""
+const link = 'https://firebasestorage.googleapis.com/v0/b/seewe-762fa.appspot.com/o/demo.jpg?alt=media&token=839d1cad-6e4c-4732-9902-58f1bab24925'
 
-export default function Product() {
-    const navigation = useNavigation()
+export default function Product({navigation,route}) {
+
+    
+    const [Product,SetProductName] = useState(route.params.PName) 
+    const [Disc,SetDisc] = useState(route.params.Disc)
+    const [Price,SetPrice] = useState(route.params.Price)
+    let Images = route.params.PImage
+    console.log("images: ",Images)
 
   return (
     <View style={styles.container}>
         <View style={styles.ImageConatiner}>
             <Image
                 style={styles.ProductImage} 
-                source={productImg}></Image>
+                source={Images ? {uri: Images } : {uri: link}}></Image>
         </View>
         <View style={styles.ProductContainer}>
             <View style={styles.TitleContainer}>
                 <View style={styles.ProductTitle}>
-                    <Text style={{fontWeight: "500"}}>Product Name</Text>
-                    <Text style={styles.TitleText}></Text>
+                    <Text style={{fontSize: 11}}>Product Name</Text>
+                    <Text style={styles.TitleText}>{Product}</Text>
                 </View>
             </View>
-            <Text style={{marginTop: 6,fontWeight: "500"}}>Discription</Text>
-            <Text style={{width: "90%"}}></Text>
+            <Text style={{marginTop: 6,fontSize: 11}}>Discription</Text>
+            <Text style={{width: "90%",fontSize: 16}}>{Disc}</Text>
             <View>
-                <Text style={{marginTop: 6,fontWeight: "500"}}>Price</Text>
-                <Text style={styles.PriceText}>{rupee}</Text>
+                <Text style={{marginTop: 10,fontSize: 11}}>Price</Text>
+                <Text style={styles.PriceText}>{rupee}{Price}</Text>
             </View>
         </View>
         <View style={{flex:1,alignItems: "center"}}>
@@ -74,11 +82,13 @@ const styles = StyleSheet.create({
     },
     TitleText: {
         fontSize: 20,
-        color: Colors.DEFAULT_BLACK
+        color: Colors.DEFAULT_BLACK,
+        fontWeight: "600"
     },
     PriceText: {
-        fontSize: 22,
+        fontSize: 26,
         color: "green",
+        fontWeight: "600"
     },
     ProfileContainer: {
         width: "90%",

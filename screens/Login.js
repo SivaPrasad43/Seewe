@@ -26,9 +26,9 @@ export default function Login({navigation}) {
             console.log('Total users: ', querySnapshot.size);
             querySnapshot.forEach(doc => {
             console.log('User ID: ', doc.id, doc.data());
-            const {name,password,reg_number} = doc.data()
+            const {uid,name,password,reg_number} = doc.data()
             UserData.push({
-                uid : doc.id,
+                uid,
                 name,
                 password,
                 reg_number
@@ -45,10 +45,10 @@ export default function Login({navigation}) {
             console.log(item.name)
             try {
                 if (item.reg_number == user && item.password == pass){
-                    navigation.navigate('TabNavigation')
+                    navigation.navigate('TabNavigation',{uid: item.uid, uname: item.name, ureg: item.reg_number })
                 }             
             } catch (error) {
-                console.warn(e);
+                console.warn(error);
             }
         })
     }

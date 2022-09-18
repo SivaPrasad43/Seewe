@@ -11,11 +11,20 @@ import SellItem from '../SellItem';
 import Notification from '../Notification';
 import Product from '../Product';
 import HomeNavigation from './HomeNavigation';
+import { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 
 const BottomTab = createMaterialBottomTabNavigator()
 
-export default function TabNavigation() {
+export default function TabNavigation({navigation,route}) {
+
+  const [Uid,SetUid] = useState(route.params.uid) 
+  const [Uname,SetUname] = useState(route.params.uname)
+  const [Ureg,SetUreg] = useState(route.params.ureg)
+
+  console.log("Tab naaaaaavigation ethy : ",Uid)
+
   return (
         <BottomTab.Navigator
           initialRouteName="Home"
@@ -25,6 +34,7 @@ export default function TabNavigation() {
           <BottomTab.Screen 
             name="HomeNavigation" 
             component={HomeNavigation}
+            initialParams={{ uid: Uid, uname: Uname, ureg : Ureg }}
             options={{
               tabBarLabel: 'Home',
               tabBarIcon: ({ color }) => (

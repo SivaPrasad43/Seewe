@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 
-import { Text,View, FlatList,StyleSheet, ActivityIndicator,Image } from 'react-native'
+import { Text,View, FlatList,StyleSheet, ActivityIndicator,Image,RefreshControl } from 'react-native'
 import React, {useState,useEffect} from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Category from '../components/Category.js';
@@ -13,19 +13,31 @@ import SellItem from './SellItem.js';
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
-import { CList1 } from '../contents/Category_items.js';
 import AppBar from '../components/AppBar.js';
+import database from '@react-native-firebase/database'
+import storage,{ firebase } from '@react-native-firebase/storage'
 
-const HomeScreen = () => {
+const CList1 = ["All","Study Meterials","Books","Arts","Profiles"]
+let ProductData = []
+let FilterData = []
+const link = 'https://firebasestorage.googleapis.com/v0/b/seewe-762fa.appspot.com/o/demo.jpg?alt=media&token=839d1cad-6e4c-4732-9902-58f1bab24925'
+
+const UserImg = require("../res/userImg.jpg")
+
+const HomeScreen = ({uid,uname,ureg}) => {
 
   const [username,setUsername] = useState("")
   const [Product,SetProduct] = useState([])
+  const [Filter,setFilter] = useState([])
   const [ActiveIndex,SetActiveIndex] = useState(0)
   const [loading,SetLoading] = useState(true) 
+  const [Fav,setFav] = useState([])
+  const [url,setUrl] = useState("")
+  const [userid,setUserid] = useState("")
 
   const navigation = useNavigation(); 
 
-  useEffect(()=>{
+  const getData = () => {
     firestore()
     .collection('productList')
     .get()
@@ -33,23 +45,65 @@ const HomeScreen = () => {
         querySnapshot => {
           const Product = []
           querySnapshot.forEach(doc => {
-          const {ProductName,Discription,Price} = doc.data()
+          const Plist = doc.data()
+          // console.log(Plist)
           Product.push({
-            id : doc.id,
-            ProductName,
-            Discription,
-            Price
+            id: Plist.id,
+            name: Plist.ProductName,
+            disc: Plist.Discription,
+            price: Plist.Price,
+            category: Plist.Category
           })
-          console.log(Product)
-          SetProduct(Product)
+          if (ActiveIndex === 0) {
+            FilterData = []
+            FilterData = Product
+          }else{
+            FilterData = []
+            FilterData = ProductData.filter((item) => item.category === CList1[ActiveIndex]) 
+          }
           SetLoading(false)
-          
         })
+        SetProduct(Product)
+        ProductData = Product
+        console.log(Product.map(product => product.category))
+        console.log(Product.map(product => product.disc))
+        console.log(ActiveIndex)
+        console.log(CList1[ActiveIndex])
+        console.log("ProductData : ",ProductData)
+        console.log("FilterData : ",FilterData)
     })
-  },[])
+  }
 
+  async function getImage() {
+    const url = await storage()
+    .ref('user/'+ uid + '.jpeg')
+    .getDownloadURL()
+    console.log("download : ",url)
+    setUrl(url)
+    setUserid(uid)
+  }
+
+  const FavItems = Product.map(product => product.id)
+
+  console.log( "Fav : ",FavItems)
+
+  const Favorites = () => {
+            database().ref('/Fav').on('value',snapshot => {
+              let data = snapshot.val()
+              const items = Object.values(data)
+              console.log("fav items : ",items)
+              setFav(data)
+          })
+}
+
+  useEffect(()=>{
+    getData();
+    getImage();
+    // Favorites();
+  },[ActiveIndex])
+ 
   const ProductCardRender = ({item}) => (
-    <ProductCard name={item.ProductName} discription={item.Discription} price = {item.Price}/>
+    <ProductCard userid={userid} id={item.id} name={item.name} description={item.disc} price = {item.price}/>
   )
 
   const CategoryList = () => {
@@ -58,7 +112,7 @@ const HomeScreen = () => {
         {CList1.map((item,index)=>(
           <TouchableOpacity
             key={index}
-            onPress={()=>SetActiveIndex(index)} >
+            onPress={()=>SetActiveIndex(index)}>
               <Text style={[styles.CategoryText, ActiveIndex === index && styles.CategoryActive]}>{item}</Text>
           </TouchableOpacity>
         ))}
@@ -76,13 +130,20 @@ const HomeScreen = () => {
           />):(<></>)}
           <AppBar/>
           <View style={styles.HomeHeaderBottom}>
-            <View>
-              <Text style={styles.HomeSubTitle}>Welcome to</Text>
-              <Text style={styles.HomeTitle}>Seewe Market</Text>
+          <View style={{flexDirection:"row",alignItems:"center"}}>
+            <View style={styles.UserData}>
+                    <Image 
+                        style={styles.UserImage}
+                        source={url ? {uri: url } : {uri: link}}></Image>
             </View>
+            <View>
+              <Text style={styles.HomeTitle}>Hey {uname}!</Text>
+              <Text style={styles.HomeSubTitle}>Welcome to Seewe✨</Text>
+            </View>
+          </View>
             <TouchableOpacity 
               style={styles.sellItBtn}
-              onPress={()=>navigation.navigate('HomeNavigation',{screen:"Sell Item"})}>
+              onPress={()=>navigation.navigate("Sell Item",{userid: userid})}>
               <Icon name="add" size={20} color={"white"}/>
               <Text style={{fontWeight:"bold",color:"white"}}>Sell Item</Text>
             </TouchableOpacity>
@@ -91,12 +152,16 @@ const HomeScreen = () => {
               <CategoryList/> 
           </View>
             <View 
-              style={{margin: "2%"}}>
+              style={{margin: "2%",marginBottom: "38%"}}>
               <FlatList
-                data={Product}
+                data={FilterData}
                 numColumns={2}
-                keyExtractor={item =>item.id}
+                keyExtractor={item =>item.id}                
+                refreshControl={
+                    <RefreshControl refreshing={loading} onRefresh={getData} />
+                  }
                 showsVerticalScrollIndicator={false}
+                
                 renderItem={ProductCardRender}>
               </FlatList>
             </View>
@@ -104,9 +169,12 @@ const HomeScreen = () => {
   ) 
 }
 
-export default function Home() {
+export default function Home({route}) {
+    const [Uid,SetUid] = useState(route.params.uid) 
+    const [Uname,SetUname] = useState(route.params.uname)
+    const [Ureg,SetUreg] = useState(route.params.ureg)
   return (
-      <HomeScreen/>
+      <HomeScreen uid = {Uid} uname = {Uname} ureg= {Ureg}/>
   )
 }
 
@@ -134,11 +202,11 @@ const styles = StyleSheet.create({
   },
   HomeTitle: {
     color: Colors.THEME_COLOR,
-    fontSize:23,
+    fontSize:18,
     fontWeight: "bold",
   },
   HomeSubTitle:{
-    fontSize: 16,
+    fontSize: 14,
     color: Colors.DEFAULT_BLACK_LIGHT_1,
   },
   sellItBtn:{
@@ -148,6 +216,8 @@ const styles = StyleSheet.create({
     flexDirection:"row",
     elevation: 5,
     borderRadius: 50,
+    borderColor: "#0E918A",
+    borderWidth: 1,
     marginVertical:10,
     justifyContent: "center",
     alignItems: "center"
@@ -156,5 +226,18 @@ const styles = StyleSheet.create({
     position:"absolute",
     left: "45%",
     top: "50%"
-  }
+  },
+  UserData: {
+    height: 40,
+    width:40,
+    backgroundColor: Colors.DEFAULT_LIGHT_GRAY,
+    borderRadius: 50,
+    marginRight: 8
+  },
+  UserImage: {
+    height: "100%",
+    width: "100%",
+    resizeMode: "cover",
+    borderRadius: 50
+  },
 })
