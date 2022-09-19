@@ -24,7 +24,7 @@ const link = 'https://firebasestorage.googleapis.com/v0/b/seewe-762fa.appspot.co
 
 const UserImg = require("../res/userImg.jpg")
 
-const HomeScreen = ({uid,uname,ureg}) => {
+const HomeScreen = ({uid,phone,uname,ureg}) => {
 
   const [username,setUsername] = useState("")
   const [Product,SetProduct] = useState([])
@@ -48,6 +48,9 @@ const HomeScreen = ({uid,uname,ureg}) => {
           // console.log(Plist)
           Product.push({
             userid: Plist.userid, 
+            uname: Plist.uname,
+            ureg: Plist.ureg,
+            phone:phone,
             id: Plist.id,
             name: Plist.ProductName,
             disc: Plist.Discription,
@@ -102,7 +105,7 @@ const HomeScreen = ({uid,uname,ureg}) => {
   },[ActiveIndex])
  
   const ProductCardRender = ({item}) => (
-    <ProductCard userid={item.userid} id={item.id} name={item.name} description={item.disc} price = {item.price}/>
+    <ProductCard userid={item.userid} uname={item.uname} ureg={item.ureg} phone={item.phone} id={item.id} name={item.name} description={item.disc} price = {item.price}/>
   )
 
   const CategoryList = () => {
@@ -142,7 +145,7 @@ const HomeScreen = ({uid,uname,ureg}) => {
           </View>
             <TouchableOpacity 
               style={styles.sellItBtn}
-              onPress={()=>navigation.navigate("Sell Item",{userid: userid})}>
+              onPress={()=>navigation.navigate("Sell Item",{userid: uid, uname: uname, ureg: ureg})}>
               <Icon name="add" size={20} color={"white"}/>
               <Text style={{fontWeight:"bold",color:"white"}}>Sell Item</Text>
             </TouchableOpacity>
@@ -172,8 +175,9 @@ export default function Home({route}) {
     const [Uid,SetUid] = useState(route.params.uid) 
     const [Uname,SetUname] = useState(route.params.uname)
     const [Ureg,SetUreg] = useState(route.params.ureg)
+    const [phone,SetPhone] = useState(route.params.phone)
   return (
-      <HomeScreen uid = {Uid} uname = {Uname} ureg= {Ureg}/>
+      <HomeScreen uid = {Uid} uname = {Uname} ureg= {Ureg} phone = {phone}/>
   )
 }
 

@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView,ScrollView } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView,ScrollView,Linking } from 'react-native'
 import React,{useEffect,useState} from 'react'
 import Colors from '../contents/colors/Colors'
 import  Icon  from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -19,9 +19,19 @@ export default function Product({navigation,route}) {
     const [Disc,SetDisc] = useState(route.params.Disc)
     const [Price,SetPrice] = useState(route.params.Price)
     const [userid,Setuserid] = useState(route.params.userid)
+    const [uname,SetUname]  = useState(route.params.uname)
+    const [ureg,SetUreg] = useState(route.params.ureg)
+    const [phone,SetPhone] = useState(route.params.phone)
+
     const [url,setUrl] = useState("")
     let Images = route.params.PImage
     console.log("images: ",Images)
+
+    console.log("Product")
+
+    console.log ("username::::::::::::",uname)
+    console.log ("ureg::::::::::::",ureg)
+    console.log("phone::::::::::::::",phone)
 
     async function getImage() {
         const url = await storage()
@@ -37,12 +47,12 @@ export default function Product({navigation,route}) {
 
   return (
     <SafeAreaView style={styles.container}>
+        <ScrollView>
         <View style={styles.ImageConatiner}>
             <Image
                 style={styles.ProductImage} 
                 source={Images ? {uri: Images } : {uri: link}}></Image>
         </View>
-        <ScrollView>
             <View style={styles.ProductContainer}>
                 <View style={styles.TitleContainer}>
                     <View style={{width:"100%",flexDirection:"row",justifyContent:"space-between"}}>
@@ -64,8 +74,8 @@ export default function Product({navigation,route}) {
                             source={url ? {uri: url } : {uri: link}}
                             />
                         <View>
-                            <Text style={{fontWeight:"bold",fontSize:14}}>Sivaprasad</Text>
-                            <Text style={{fontSize: 10}}>VDA19CS043</Text>
+                            <Text style={{fontWeight:"bold",fontSize:14}}>{uname}</Text>
+                            <Text style={{fontSize: 10}}>{ureg}</Text>
                         </View>
                     </View>
                 </View>
@@ -74,13 +84,15 @@ export default function Product({navigation,route}) {
                     <Text style={{width: "90%",fontSize: 16}}>{Disc}</Text>
                 </View>
             </View>
-        </ScrollView>
+            </ScrollView>
         <View style={{flex:1,alignItems:"flex-end",marginRight:10}}>
             <View style={styles.ProfileContainer}>
                 {/* <View style = {styles.Profile}>
                     <Text style={{fontSize: 15,fontWeight: "500",marginHorizontal:5}}>Sivaprasad</Text>
                 </View> */}
-                <TouchableOpacity  style={styles.whatsapp}>
+                <TouchableOpacity  
+                style={styles.whatsapp}
+                onPress={ ()=>{ Linking.openURL('https://wa.me/+91'+phone)}}>
                     <Icon name='whatsapp' size={25} color="white"/>
                 </TouchableOpacity>
             </View>

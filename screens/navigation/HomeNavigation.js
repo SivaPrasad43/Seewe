@@ -13,6 +13,7 @@ export default function HomeNavigation({route}) {
     const [Uid,SetUid] = useState(route.params.uid) 
     const [Uname,SetUname] = useState(route.params.uname)
     const [Ureg,SetUreg] = useState(route.params.ureg)
+    const [phone,SetPhone] = useState(route.params.phone)
 
     console.log(route.params.uid)
   return (
@@ -20,7 +21,7 @@ export default function HomeNavigation({route}) {
             <HomeStack.Screen 
               name="Home2" 
               component={Home} 
-              initialParams={{ uid: Uid, uname: Uname, ureg : Ureg }}
+              initialParams={{ uid: Uid, uname: Uname, ureg : Ureg, phone: phone }}
               options={{headerShown: false}}/>
             <HomeStack.Screen name="Sell Item" component={SellItem}/>
             <HomeStack.Screen name="Product" component={Product} options={{headerShown: false}}/>

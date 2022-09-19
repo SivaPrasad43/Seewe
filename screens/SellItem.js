@@ -20,23 +20,6 @@ const secondaryStorageBucket = firebase.app().storage('gs://seewe-762fa.appspot.
 
 const reference = secondaryStorageBucket.ref("imageName/image.jpeg");
 
-function DisplayData(userid,ProductName,Discription,Price,Category){
-  firestore()
-  .collection('productList')
-  .add({
-    userid: userid,
-    id : id,
-    Category: Category,
-    ProductName: ProductName,
-    Discription: Discription,
-    Price : Price,
-  })
-  .then(() => {
-    // console.log('Product added!');
-  });
-  console.log("useEffect run")
-}
-
 // function uploadImage(ImgPath){
 //   const task = reference.putFile(ImgPath);
 //   task.on('state_changed', taskSnapshot => {
@@ -58,11 +41,32 @@ export default function SellItem({navigation,route}) {
   const [Active,SetActive] = useState(null)
   const [uploading,setUploading] = useState(null)
   const [userid,setUuid] = useState(route.params.userid)
+  const [uname,SetUname] = useState(route.params.uname)
+  const [ureg,SetUreg] = useState(route.params.ureg)
 
   useEffect(() => { 
     id = uuid.v4(); 
     console.log(id)
   },[]);
+
+  function DisplayData(userid,uname,ureg,ProductName,Discription,Price,Category){
+    firestore()
+    .collection('productList')
+    .add({
+      userid: userid,
+      uname : uname,
+      ureg : ureg,
+      id : id,
+      Category: Category,
+      ProductName: ProductName,
+      Discription: Discription,
+      Price : Price,
+    })
+    .then(() => {
+      // console.log('Product added!');
+    });
+    console.log("useEffect run")
+  }
 
 
   const uploadImage = async () => {
@@ -172,7 +176,7 @@ export default function SellItem({navigation,route}) {
           <TouchableOpacity 
             style={styles.SubmitBtn}
             onPress={()=>{
-              DisplayData(userid,ProductName,Discription,Price,Category)
+              DisplayData(userid,uname,ureg,ProductName,Discription,Price,Category)
               uploadImage(ImgPath)
               navigation.navigate('Home2')
             }}>

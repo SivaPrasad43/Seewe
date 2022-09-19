@@ -17,12 +17,11 @@ const link = 'https://firebasestorage.googleapis.com/v0/b/seewe-762fa.appspot.co
 
 const secondaryStorageBucket = firebase.app().storage('gs://seewe-762fa.appspot.com');
 
-const ProductCard = ({userid,id,name,description,price}) => {
+const ProductCard = ({userid,uname,phone,ureg,id,name,description,price}) => {
     const navigation = useNavigation(); 
     const [liked,setLiked] = useState(false)
     const [url,setUrl] = useState("")
     const [owner,setOwner] = useState("")
-
 
     const user = id
     console.log("uuuuusseeer : ",user)
@@ -84,7 +83,7 @@ const ProductCard = ({userid,id,name,description,price}) => {
         </TouchableOpacity> 
         <TouchableOpacity 
             style={styles.ProductConatainer}
-            onPress={()=>navigation.navigate('Product',{userid : userid ,PName: name, Disc: description, Price: price,PImage: url})}>
+            onPress={()=>navigation.navigate('Product',{userid : userid, uname: uname, phone: phone ,ureg:ureg ,PName: name, Disc: description, Price: price,PImage: url})}>
             <View style={styles.ImageConatiner}>
                 <Image
                     style={styles.ProductImage}

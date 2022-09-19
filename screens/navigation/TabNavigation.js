@@ -22,6 +22,7 @@ export default function TabNavigation({navigation,route}) {
   const [Uid,SetUid] = useState(route.params.uid) 
   const [Uname,SetUname] = useState(route.params.uname)
   const [Ureg,SetUreg] = useState(route.params.ureg)
+  const [phone,SetPhone] = useState(route.params.phone)
 
   console.log("Tab naaaaaavigation ethy : ",Uid)
 
@@ -34,7 +35,7 @@ export default function TabNavigation({navigation,route}) {
           <BottomTab.Screen 
             name="HomeNavigation" 
             component={HomeNavigation}
-            initialParams={{ uid: Uid, uname: Uname, ureg : Ureg }}
+            initialParams={{ uid: Uid, uname: Uname, ureg : Ureg, phone: phone, }}
             options={{
               tabBarLabel: 'Home',
               tabBarIcon: ({ color }) => (
