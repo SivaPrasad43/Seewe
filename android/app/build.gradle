@@ -261,6 +261,10 @@ android {
 }
 
 dependencies {
+
+    implementation project(':lottie-react-native')
+
+    
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
     implementation project(':react-native-vector-icons')

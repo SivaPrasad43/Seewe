@@ -11,8 +11,10 @@ import SellItem from '../SellItem';
 import Notification from '../Notification';
 import Product from '../Product';
 import HomeNavigation from './HomeNavigation';
+import Logout from '../Logout';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import Favourates from '../Favourates';
 
 
 const BottomTab = createMaterialBottomTabNavigator()
@@ -29,7 +31,7 @@ export default function TabNavigation({navigation,route}) {
   return (
         <BottomTab.Navigator
           initialRouteName="Home"
-          activeColor="black"
+          activeColor={Colors.THEME_COLOR}
           inactiveColor= {Colors.DEFAULT_GRAY}
           barStyle={{ backgroundColor: 'white' }}>
           <BottomTab.Screen 
@@ -43,8 +45,8 @@ export default function TabNavigation({navigation,route}) {
               ),
             }} />
           <BottomTab.Screen 
-            name="Test 1" 
-            component={Test_1}
+            name="Favourates" 
+            component={Favourates}
             options={{
               tabBarLabel: 'Favorites',
               tabBarIcon: ({ color }) => (
@@ -61,8 +63,8 @@ export default function TabNavigation({navigation,route}) {
               ),
             }} />
           <BottomTab.Screen 
-            name="Login" 
-            component={Login}
+            name="Logout" 
+            component={Logout}
             options={{
               tabBarLabel: 'Logout',
               tabBarIcon: ({ color }) => (

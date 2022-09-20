@@ -23,9 +23,8 @@ export default function Login({navigation}) {
         .get()
         .then(querySnapshot => {
             const UserData = []
-            console.log('Total users: ', querySnapshot.size);
+            // console.log('Total users: ', querySnapshot.size);
             querySnapshot.forEach(doc => {
-            console.log('User ID: ', doc.id, doc.data());
             const {uid,name,phone,password,reg_number} = doc.data()
             UserData.push({
                 uid,
@@ -37,16 +36,16 @@ export default function Login({navigation}) {
             SetUserData(UserData)  
             }); 
         });
-    },[])
+    })
 
     function CheckLogin(user,pass){
-        console.log("username: ",user)
-        console.log("password ",pass)
         UserData.forEach(item => {
             console.log(item.name)
             try {
                 if (item.reg_number == user && item.password == pass){
                     navigation.navigate('TabNavigation',{uid: item.uid, uname: item.name, ureg: item.reg_number, phone: item.phone})
+                    setUsername(null)
+                    setPassword(null)
                 }             
             } catch (error) {
                 console.warn(error);
@@ -61,7 +60,7 @@ export default function Login({navigation}) {
           <Text style = {styles.LoginText}>Login</Text>
           <View style = {styles.InputContainer}>
               <View style = {{flexDirection: "row",alignItems:"center"}}>
-                <Icon name="person" size={20} color={Colors.DEFAULT_BLACK} style={{marginRight: 10}}/>  
+                <Icon name="badge" size={20} color={Colors.DEFAULT_BLACK} style={{marginRight: 10}}/>  
                 <TextInput
                     style = {styles.inputText} 
                     placeholder='Enter Register Number'
@@ -87,11 +86,11 @@ export default function Login({navigation}) {
           onPress={()=>CheckLogin(username,password)}>
               <Text style={{fontWeight:'500',fontSize: 15,color:Colors.DEFAULT_BLACK}}>Login</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
+          {/* <TouchableOpacity 
           style={styles.LoginBtn}
           onPress={()=>navigation.navigate("TabNavigation")}>
               <Text style={{fontWeight:'500',fontSize: 15,color:Colors.DEFAULT_BLACK}}>Go to Home</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <View style={{flexDirection: 'row'}}>
             <Text style={{color: Colors.DEFAULT_BLACK_LIGHT_2}}>Don't you have an account?</Text>
             <Text 

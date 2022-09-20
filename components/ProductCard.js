@@ -121,6 +121,8 @@ const  styles = StyleSheet.create({
         height: 240,
         borderRadius: 5,
         borderWidth: 1,
+        backgroundColor:"white",
+        elevation:1,
         borderColor: Colors.DEFAULT_LIGHT_GRAY,
         position: "relative"
     },

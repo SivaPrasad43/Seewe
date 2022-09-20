@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ScrollView, Image } from 'react-native'
 import React,{useEffect, useState} from 'react'
 import Colors from '../contents/colors/Colors'
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -10,6 +10,11 @@ import { CList2 } from '../contents/Category_items'
 import { utils } from '@react-native-firebase/app'
 import storage,{ firebase } from '@react-native-firebase/storage'
 import uuid from 'react-native-uuid';
+import { ProgressDialog } from 'react-native-simple-dialogs';
+import { Dialog } from 'react-native-simple-dialogs';
+import Lottie from 'lottie-react-native';
+import { Center } from 'native-base'
+
 
 var ImgPath=""
 const imageName = 'images'
@@ -43,6 +48,9 @@ export default function SellItem({navigation,route}) {
   const [userid,setUuid] = useState(route.params.userid)
   const [uname,SetUname] = useState(route.params.uname)
   const [ureg,SetUreg] = useState(route.params.ureg)
+  const [progress,SetProgress] = useState(false)
+  const [dialogVisible,SetDialogVisible] = useState(false)
+  const [ProfileImgAdd,SetProfileImgAdd] = useState("https://cdn-icons-png.flaticon.com/512/61/61183.png")
 
   useEffect(() => { 
     id = uuid.v4(); 
@@ -79,7 +87,9 @@ export default function SellItem({navigation,route}) {
       console.log("file naaaaaaaaameeeee :",filename)
       await storage().ref('/images/' + userid + '_' +filename).putFile(uploadUri)
       setUploading(false)
-      Alert.alert('Successfully uploaded')
+      // Alert.alert('Successfully uploaded')
+      SetProgress(false)
+      SetDialogVisible(true)
     } catch (error) {
       console.log(error)
     }
@@ -101,8 +111,55 @@ export default function SellItem({navigation,route}) {
 
   return (
     <ScrollView>
+      <ProgressDialog
+        visible={progress}
+        title="Uploading Your Product"
+        message="Please, wait..."
+        onTouchOutside={() => SetProgress(false)}
+      />
+      <Dialog
+        visible={dialogVisible}
+        onTouchOutside={() => SetDialogVisible(false)}
+        >
+        <View style={{justifyContent:"center",alignItems:"center"}}>
+          <Lottie
+            source={require('../res/success.json')}
+            colorFilters={[
+              {
+                keypath: 'button',
+                color: '#F00000',
+              },
+              {
+                keypath: 'Sending Loader',
+                color: '#F00000',
+              },
+            ]}
+            style = {{width:"50%"}}
+            autoSize = {true}
+            autoPlay
+            speed = {2}
+            loop = {false}
+          />
+          <View>
+          <Text style={{fontWeight:"bold",fontSize:18}}>Item Uploaded Successfully!!</Text>
+          <View style={{alignItems:"center",justifyContent:"center"}}>
+          <TouchableOpacity 
+            style={{backgroundColor:Colors.DEFAULT_YELLOW,width:"70%",paddingHorizontal:16,paddingVertical:8,marginTop:10,borderRadius:8}}
+            onPress = {()=>navigation.navigate('Home2')}>
+            <Text style={{fontWeight:'500',fontSize: 15,textAlign:"center"}}>Go To Home</Text>
+          </TouchableOpacity>
+          </View>
+          </View>
+        </View>
+      </Dialog>
       <View style={styles.container}>
         <View style={{marginVertical: 5}}>
+        <TouchableOpacity 
+                onPress = {LoadImg}>
+                <Image 
+                    source={{uri: ProfileImgAdd}}
+                    style = {styles.ProfileImage}/>
+            </TouchableOpacity>
           <Text style={styles.inputText}>Product name</Text>
           <View style = {styles.inputContainer}>
                 <View style = {{flexDirection: "row",alignItems:"center"}}>
@@ -178,7 +235,7 @@ export default function SellItem({navigation,route}) {
             onPress={()=>{
               DisplayData(userid,uname,ureg,ProductName,Discription,Price,Category)
               uploadImage(ImgPath)
-              navigation.navigate('Home2')
+              SetProgress(true)
             }}>
               <Text style={{fontWeight:'500',fontSize: 15,textAlign:"center"}}>Submit</Text>
           </TouchableOpacity>

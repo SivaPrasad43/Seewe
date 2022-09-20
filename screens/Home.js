@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "white"
+    backgroundColor: Colors.THEME_COLOR_BACKGROUND
   },
   HomeHeaderBottom : {
     paddingHorizontal: 15,

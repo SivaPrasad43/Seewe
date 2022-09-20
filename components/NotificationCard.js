@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import Colors from '../contents/colors/Colors'
@@ -18,13 +19,13 @@ export default function NotificationCard({title,date,data}) {
 
 const styles = StyleSheet.create({
     Conatiner: {
-        margin: 10,
+        marginHorizontal: 10,
+        marginVertical: 5,
         padding: 10,
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderColor: Colors.THEME_COLOR,
         borderRadius: 10,
         backgroundColor: "white",
-        elevation: 3
     },
     Title : {
         fontSize: 20,
